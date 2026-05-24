@@ -83,7 +83,9 @@ function slider() {
 
 	const nextBtn = document.querySelector(".next"),
 		prevBtn = document.querySelector(".prev"),
-		slides = document.querySelectorAll(".slide");
+		slides = document.querySelectorAll(".slide"),
+		dots = document.querySelectorAll(".dot"),
+		slidesWrapper = document.querySelector(".slider-wrapper");
 
 	let currentIndex = 1;
 
@@ -93,6 +95,14 @@ function slider() {
 				slide.classList.add("active");
 			} else {
 				slide.classList.remove("active");
+			}
+		});
+
+		dots.forEach((dot, index) => {
+			if (index === currentIndex) {
+				dot.classList.add("active");
+			} else {
+				dot.classList.remove("active");
 			}
 		});
 	}
@@ -140,7 +150,22 @@ function slider() {
 	// 	}
 	// });
 
-	setInterval(goToNextSlide, 5000); // Automatically go to the next slide every 5 seconds
+	let autoSlideInterval = setInterval(goToNextSlide, 5000); // Automatically go to the next slide every 5 seconds
+
+	slidesWrapper.addEventListener("mouseenter", () => {
+		clearInterval(autoSlideInterval); // Stop auto-sliding when mouse enters the slider area
+	});
+
+	slidesWrapper.addEventListener("mouseleave", () => {
+		autoSlideInterval = setInterval(goToNextSlide, 5000); // Resume auto-sliding when mouse leaves the slider area
+	});
+
+	dots.forEach((dot) => {
+		dot.addEventListener("click", () => {
+			currentIndex = parseInt(dot.getAttribute("data-index"));
+			updateSlides();
+		});
+	});
 }
 
 slider();
@@ -150,3 +175,40 @@ slider();
 (function test() {
 	// console.log("test");
 })();
+
+const clock = document.querySelector(".clock");
+const countdown = document.querySelector(".countdown");
+
+function updateClock() {
+	const now = new Date();
+	const hours = String(now.getHours()).padStart(2, "0");
+	const minutes = String(now.getMinutes()).padStart(2, "0");
+	const seconds = String(now.getSeconds()).padStart(2, "0");
+	clock.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+updateClock(); // Initial call to display the clock immediately
+setInterval(updateClock, 1000); // Update the clock every second
+
+function updateCountdown() {
+	const now = new Date();
+	const targetDate = new Date("2026-05-29T20:00:00");
+	const timeDifference = targetDate - now;
+
+	if (timeDifference <= 0) {
+		countdown.textContent = "The lesson has started!";
+		return;
+	}
+
+	const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+	const hours = Math.floor(
+		(timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+	);
+	const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+	const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+	countdown.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+
+updateCountdown(); // Initial call to display the countdown immediately
+setInterval(updateCountdown, 1000); // Update the countdown every second

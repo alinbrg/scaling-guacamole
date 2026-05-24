@@ -74,4 +74,31 @@
 			right: 20px;
 		}
 	}
+
+	.pagination {
+		position: absolute;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		button {
+			position: static;
+			display: inline-block;
+			width: 15px;
+			height: 15px;
+			border-radius: 50%;
+			padding: 0;
+			background-color: #999;
+			border: none;
+			margin: 0 5px;
+			cursor: pointer;
+			&.active {
+				background-color: #333;
+			}
+			&:hover,
+			&:focus-visible {
+				background-color: #0c0a0a;
+			}
+		}
+	}
 }
